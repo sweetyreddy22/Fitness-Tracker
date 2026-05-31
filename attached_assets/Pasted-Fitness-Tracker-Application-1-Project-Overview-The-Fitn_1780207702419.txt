@@ -1,0 +1,221 @@
+Fitness Tracker Application
+1. Project Overview
+
+The Fitness Tracker Application helps users monitor their daily fitness activities such as steps walked, distance covered, calories burned, workout duration, BMI, and fitness goals.
+
+Objectives
+Track daily physical activity.
+Monitor calories burned.
+Calculate BMI.
+Maintain workout history.
+Generate fitness reports.
+2. Features
+User Module
+User Registration
+Login/Logout
+Profile Management
+Activity Tracking Module
+Daily Steps Tracking
+Distance Tracking
+Calories Burned Tracking
+Water Intake Tracking
+Workout Module
+Add Workout
+Update Workout
+Delete Workout
+Workout History
+BMI Calculator
+Enter Height and Weight
+Calculate BMI
+Show Health Category
+Goal Management
+Set Daily Step Goal
+Set Calorie Goal
+Track Progress
+Reports Module
+Daily Report
+Weekly Report
+Monthly Report
+3. Recommended Tech Stack
+Option 1: Java GUI Project (Best for Academic Mini Project)
+Frontend
+Java Swing
+Backend
+Core Java
+Database
+MySQL
+Tools
+Eclipse / IntelliJ IDEA
+MySQL Workbench
+Option 2: Full Stack Web Application
+Frontend
+React.js
+HTML
+CSS
+Bootstrap
+Backend
+Spring Boot
+Database
+MySQL
+4. System Architecture
+User
+ |
+Java Swing GUI
+ |
+Core Java
+ |
+JDBC
+ |
+MySQL Database
+5. Database Design
+users
+user_id
+name
+email
+password
+age
+gender
+height
+weight
+activities
+activity_id
+user_id
+steps
+distance
+calories
+activity_date
+workouts
+workout_id
+user_id
+workout_name
+duration
+calories_burned
+workout_date
+goals
+goal_id
+user_id
+step_goal
+calorie_goal
+6. Java Swing Folder Structure
+FitnessTracker/
+│
+├── src/
+│   │
+│   ├── database/
+│   │   ├── DBConnection.java
+│   │
+│   ├── model/
+│   │   ├── User.java
+│   │   ├── Activity.java
+│   │   ├── Workout.java
+│   │
+│   ├── dao/
+│   │   ├── UserDAO.java
+│   │   ├── ActivityDAO.java
+│   │   ├── WorkoutDAO.java
+│   │
+│   ├── ui/
+│   │   ├── LoginFrame.java
+│   │   ├── RegisterFrame.java
+│   │   ├── DashboardFrame.java
+│   │   ├── ActivityFrame.java
+│   │   ├── WorkoutFrame.java
+│   │   ├── BMIFrame.java
+│   │
+│   ├── service/
+│   │   ├── BMIService.java
+│   │   ├── FitnessService.java
+│   │
+│   └── Main.java
+│
+├── lib/
+│   └── mysql-connector.jar
+│
+└── database.sql
+7. GUI Screens
+Login Screen
+Email
+Password
+Login Button
+Registration Screen
+Name
+Email
+Age
+Height
+Weight
+Dashboard
+Today's Steps
+Calories Burned
+Distance Covered
+Goal Progress
+Activity Screen
+Add Daily Steps
+Add Distance
+Add Calories
+Workout Screen
+Workout Name
+Duration
+Calories Burned
+BMI Screen
+Height Input
+Weight Input
+BMI Result
+Reports Screen
+Daily Summary
+Weekly Summary
+Monthly Summary
+8. BMI Formula
+
+Use this formula:
+
+BMI=
+Height(m)
+2
+Weight(kg)
+	​
+
+
+BMI Categories
+BMI Range	Category
+Below 18.5	Underweight
+18.5 – 24.9	Normal
+25 – 29.9	Overweight
+30+	Obese
+9. Development Steps
+Phase 1: Database Setup
+Install MySQL
+Create Database
+Create Tables
+Phase 2: Backend Logic
+Create Java Classes
+Implement JDBC Connectivity
+Implement CRUD Operations
+Phase 3: GUI Development
+Design Login Page
+Design Dashboard
+Design Activity Forms
+Phase 4: Business Logic
+BMI Calculation
+Calorie Tracking
+Goal Tracking
+Phase 5: Testing
+Unit Testing
+Database Testing
+GUI Testing
+Phase 6: Documentation
+ER Diagram
+Use Case Diagram
+Class Diagram
+Screenshots
+10. Resume Description
+
+Fitness Tracker Application | Java, Swing, JDBC, MySQL
+
+Developed a desktop-based fitness tracking system that enables users to monitor daily steps, calories burned, workout activities, BMI, and fitness goals. Implemented CRUD operations using JDBC and MySQL, designed an interactive Java Swing GUI, and generated fitness reports for activity analysis.
+
+Future Enhancements
+Google Fit integration
+Smartwatch synchronization
+Diet and Nutrition Tracking
+AI-Based Fitness Recommendations
+Mobile App Version (Android)

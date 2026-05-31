@@ -1,0 +1,803 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Fitness Tracker API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: profile
+    description: User profile operations
+  - name: activities
+    description: Daily activity tracking
+  - name: workouts
+    description: Workout management
+  - name: goals
+    description: Goal management
+  - name: water
+    description: Water intake tracking
+  - name: reports
+    description: Reports and summaries
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # Profile
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "404":
+          description: Profile not found
+    put:
+      operationId: upsertProfile
+      tags: [profile]
+      summary: Create or update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileInput"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+
+  # Activities
+  /activities:
+    get:
+      operationId: listActivities
+      tags: [activities]
+      summary: List all activity records
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Activity"
+    post:
+      operationId: createActivity
+      tags: [activities]
+      summary: Log a new activity record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivityInput"
+      responses:
+        "201":
+          description: Created activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+
+  /activities/today:
+    get:
+      operationId: getTodayActivity
+      tags: [activities]
+      summary: Get today's activity summary
+      responses:
+        "200":
+          description: Today's activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "404":
+          description: No activity for today
+
+  /activities/{id}:
+    get:
+      operationId: getActivity
+      tags: [activities]
+      summary: Get a specific activity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Activity record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateActivity
+      tags: [activities]
+      summary: Update an activity record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivityUpdate"
+      responses:
+        "200":
+          description: Updated activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteActivity
+      tags: [activities]
+      summary: Delete an activity record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Workouts
+  /workouts:
+    get:
+      operationId: listWorkouts
+      tags: [workouts]
+      summary: List all workouts
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of workouts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Workout"
+    post:
+      operationId: createWorkout
+      tags: [workouts]
+      summary: Log a new workout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkoutInput"
+      responses:
+        "201":
+          description: Created workout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workout"
+
+  /workouts/{id}:
+    get:
+      operationId: getWorkout
+      tags: [workouts]
+      summary: Get a specific workout
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workout record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workout"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateWorkout
+      tags: [workouts]
+      summary: Update a workout
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkoutUpdate"
+      responses:
+        "200":
+          description: Updated workout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workout"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteWorkout
+      tags: [workouts]
+      summary: Delete a workout
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Goals
+  /goals:
+    get:
+      operationId: getGoals
+      tags: [goals]
+      summary: Get user goals
+      responses:
+        "200":
+          description: User goals
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goals"
+        "404":
+          description: No goals set
+    put:
+      operationId: upsertGoals
+      tags: [goals]
+      summary: Create or update goals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalsInput"
+      responses:
+        "200":
+          description: Updated goals
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goals"
+
+  # Water intake
+  /water:
+    get:
+      operationId: listWaterIntake
+      tags: [water]
+      summary: List water intake records
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Water intake records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WaterIntake"
+    post:
+      operationId: logWaterIntake
+      tags: [water]
+      summary: Log water intake
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaterIntakeInput"
+      responses:
+        "201":
+          description: Logged water intake
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaterIntake"
+
+  /water/today:
+    get:
+      operationId: getTodayWater
+      tags: [water]
+      summary: Get today's total water intake
+      responses:
+        "200":
+          description: Today's water total
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaterDaySummary"
+
+  # Reports / summaries (wow endpoints)
+  /reports/dashboard:
+    get:
+      operationId: getDashboardSummary
+      tags: [reports]
+      summary: Get dashboard summary with totals and progress
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /reports/weekly:
+    get:
+      operationId: getWeeklyReport
+      tags: [reports]
+      summary: Get weekly activity and workout report
+      responses:
+        "200":
+          description: Weekly report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeeklyReport"
+
+  /reports/monthly:
+    get:
+      operationId: getMonthlyReport
+      tags: [reports]
+      summary: Get monthly activity and workout report
+      responses:
+        "200":
+          description: Monthly report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyReport"
+
+  /reports/bmi:
+    get:
+      operationId: getBmiResult
+      tags: [reports]
+      summary: Calculate BMI from user profile
+      responses:
+        "200":
+          description: BMI result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BmiResult"
+        "400":
+          description: Missing height or weight in profile
+
+  /reports/streak:
+    get:
+      operationId: getStreak
+      tags: [reports]
+      summary: Get current step-goal streak (consecutive days steps >= goal)
+      responses:
+        "200":
+          description: Current streak info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakResult"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Profile:
+      type: object
+      required: [id, name, email, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        age:
+          type: ["integer", "null"]
+        gender:
+          type: ["string", "null"]
+        heightCm:
+          type: ["number", "null"]
+        weightKg:
+          type: ["number", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProfileInput:
+      type: object
+      required: [name, email]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        age:
+          type: integer
+        gender:
+          type: string
+        heightCm:
+          type: number
+        weightKg:
+          type: number
+
+    Activity:
+      type: object
+      required: [id, activityDate, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        steps:
+          type: ["integer", "null"]
+        distanceKm:
+          type: ["number", "null"]
+        caloriesBurned:
+          type: ["integer", "null"]
+        activityDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ActivityInput:
+      type: object
+      required: [activityDate]
+      properties:
+        steps:
+          type: integer
+        distanceKm:
+          type: number
+        caloriesBurned:
+          type: integer
+        activityDate:
+          type: string
+          format: date
+
+    ActivityUpdate:
+      type: object
+      properties:
+        steps:
+          type: integer
+        distanceKm:
+          type: number
+        caloriesBurned:
+          type: integer
+        activityDate:
+          type: string
+          format: date
+
+    Workout:
+      type: object
+      required: [id, workoutName, workoutDate, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        workoutName:
+          type: string
+        durationMinutes:
+          type: ["integer", "null"]
+        caloriesBurned:
+          type: ["integer", "null"]
+        workoutDate:
+          type: string
+          format: date
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    WorkoutInput:
+      type: object
+      required: [workoutName, workoutDate]
+      properties:
+        workoutName:
+          type: string
+          minLength: 1
+        durationMinutes:
+          type: integer
+        caloriesBurned:
+          type: integer
+        workoutDate:
+          type: string
+          format: date
+        notes:
+          type: string
+
+    WorkoutUpdate:
+      type: object
+      properties:
+        workoutName:
+          type: string
+          minLength: 1
+        durationMinutes:
+          type: integer
+        caloriesBurned:
+          type: integer
+        workoutDate:
+          type: string
+          format: date
+        notes:
+          type: string
+
+    Goals:
+      type: object
+      required: [id, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        stepGoal:
+          type: ["integer", "null"]
+        calorieGoal:
+          type: ["integer", "null"]
+        waterGoalMl:
+          type: ["integer", "null"]
+        workoutGoalPerWeek:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    GoalsInput:
+      type: object
+      properties:
+        stepGoal:
+          type: integer
+        calorieGoal:
+          type: integer
+        waterGoalMl:
+          type: integer
+        workoutGoalPerWeek:
+          type: integer
+
+    WaterIntake:
+      type: object
+      required: [id, amountMl, loggedAt, createdAt]
+      properties:
+        id:
+          type: integer
+        amountMl:
+          type: integer
+        loggedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    WaterIntakeInput:
+      type: object
+      required: [amountMl]
+      properties:
+        amountMl:
+          type: integer
+
+    WaterDaySummary:
+      type: object
+      required: [date, totalMl]
+      properties:
+        date:
+          type: string
+        totalMl:
+          type: integer
+
+    DashboardSummary:
+      type: object
+      required: [todaySteps, todayCalories, todayDistanceKm, todayWaterMl, weeklyWorkouts, stepGoalPercent, calorieGoalPercent, waterGoalPercent, recentWorkouts, recentActivities]
+      properties:
+        todaySteps:
+          type: integer
+        todayCalories:
+          type: integer
+        todayDistanceKm:
+          type: number
+        todayWaterMl:
+          type: integer
+        weeklyWorkouts:
+          type: integer
+        stepGoalPercent:
+          type: number
+        calorieGoalPercent:
+          type: number
+        waterGoalPercent:
+          type: number
+        recentWorkouts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Workout"
+        recentActivities:
+          type: array
+          items:
+            $ref: "#/components/schemas/Activity"
+
+    WeeklyReportDay:
+      type: object
+      required: [date, steps, calories, distanceKm, workoutCount]
+      properties:
+        date:
+          type: string
+        steps:
+          type: integer
+        calories:
+          type: integer
+        distanceKm:
+          type: number
+        workoutCount:
+          type: integer
+
+    WeeklyReport:
+      type: object
+      required: [weekStart, weekEnd, totalSteps, totalCalories, totalDistanceKm, totalWorkouts, totalWaterMl, days]
+      properties:
+        weekStart:
+          type: string
+        weekEnd:
+          type: string
+        totalSteps:
+          type: integer
+        totalCalories:
+          type: integer
+        totalDistanceKm:
+          type: number
+        totalWorkouts:
+          type: integer
+        totalWaterMl:
+          type: integer
+        days:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeeklyReportDay"
+
+    MonthlyReportWeek:
+      type: object
+      required: [weekLabel, steps, calories, workouts]
+      properties:
+        weekLabel:
+          type: string
+        steps:
+          type: integer
+        calories:
+          type: integer
+        workouts:
+          type: integer
+
+    MonthlyReport:
+      type: object
+      required: [month, year, totalSteps, totalCalories, totalDistanceKm, totalWorkouts, totalWaterMl, weeks]
+      properties:
+        month:
+          type: integer
+        year:
+          type: integer
+        totalSteps:
+          type: integer
+        totalCalories:
+          type: integer
+        totalDistanceKm:
+          type: number
+        totalWorkouts:
+          type: integer
+        totalWaterMl:
+          type: integer
+        weeks:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyReportWeek"
+
+    BmiResult:
+      type: object
+      required: [bmi, category, heightCm, weightKg]
+      properties:
+        bmi:
+          type: number
+        category:
+          type: string
+        heightCm:
+          type: number
+        weightKg:
+          type: number
+
+    StreakResult:
+      type: object
+      required: [currentStreak, longestStreak, stepGoal, goalHitToday]
+      properties:
+        currentStreak:
+          type: integer
+          description: Consecutive days the step goal has been hit (ending today or yesterday)
+        longestStreak:
+          type: integer
+          description: All-time longest streak
+        stepGoal:
+          type: integer
+          description: The step goal used to compute the streak (0 if no goal set)
+        goalHitToday:
+          type: boolean
+          description: Whether today's steps already meet the goal
